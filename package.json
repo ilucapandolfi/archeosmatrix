@@ -1,7 +1,7 @@
 {
   "name": "archeos-matrix",
-  "version": "0.1.1",
-  "private": true,
+  "version": "0.1.2",
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,10 @@
     "next": "14.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "lucide-react": "latest"
+    "lucide-react": "latest",
+    "@supabase/supabase-js": "latest",
+    "clsx": "latest",
+    "tailwind-merge": "latest"
   },
   "devDependencies": {
     "autoprefixer": "latest",
