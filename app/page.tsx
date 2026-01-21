@@ -1,26 +1,44 @@
-export default function HomePage() {
+"use client";
+import React, { useState } from 'react';
+import { LayoutGrid, BrainCircuit, Landmark, Plus } from 'lucide-react';
+
+export default function ArcheosDashboard() {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const modules = [
+    { id: 'logistica', title: 'Logistica & Delivery', icon: <LayoutGrid className="w-5 h-5" />, color: 'text-blue-400' },
+    { id: 'intelligence', title: 'Intelligence Engine', icon: <BrainCircuit className="w-5 h-5" />, color: 'text-purple-400' },
+    { id: 'brokeraggio', title: 'Sales & Brokeraggio', icon: <Landmark className="w-5 h-5" />, color: 'text-green-400' },
+  ];
+
   return (
-    <div>
-      <h1 style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "10px" }}>Benvenuto, Architetto</h1>
-      <p style={{ color: "#a1a1aa", marginBottom: "40px" }}>Seleziona un modulo per iniziare a gestire i flussi di brokeraggio.</p>
+    <div className="min-h-screen bg-[#09090b] text-white p-8 font-sans">
+      <header className="mb-12">
+        <h1 className="text-4xl font-black tracking-tighter mb-2">ARCHEOS MATRIX <span className="text-sm font-mono text-zinc-500">v0.1.2</span></h1>
+        <p className="text-zinc-400 font-medium">Benvenuto Architetto. I sistemi sono nominali.</p>
+      </header>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-        {/* Blocco Esempio: Database Kanban */}
-        <div style={{ padding: "24px", borderRadius: "12px", border: "1px solid #27272a", backgroundColor: "#18181b" }}>
-          <h3 style={{ marginTop: 0 }}>📊 Status Operativo Intelligence</h3>
-          <p style={{ fontSize: "0.9rem", color: "#71717a" }}>Monitoraggio in tempo reale dei sistemi di arbitraggio.</p>
-          <div style={{ marginTop: "20px", color: "#4ade80", fontWeight: "bold" }}>● Sistema Online</div>
-        </div>
-
-        {/* Blocco Esempio: Gateway Pagamenti */}
-        <div style={{ padding: "24px", borderRadius: "12px", border: "1px solid #27272a", backgroundColor: "#18181b" }}>
-          <h3 style={{ marginTop: 0 }}>💳 Modulo Pagamenti Stripe</h3>
-          <p style={{ fontSize: "0.9rem", color: "#71717a" }}>Configura checkout dinamici per i tuoi servizi.</p>
-          <button style={{ marginTop: "20px", padding: "8px 16px", backgroundColor: "#fafafa", color: "#18181b", border: "none", borderRadius: "6px", fontWeight: "bold", cursor: "pointer" }}>
-            Configura Gateway
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {modules.map((mod) => (
+          <button 
+            key={mod.id}
+            onClick={() => alert(`Inizializzazione modulo ${mod.title}...`)}
+            className="group p-6 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 transition-all text-left"
+          >
+            <div className={`mb-4 ${mod.color}`}>{mod.icon}</div>
+            <h3 className="text-lg font-bold mb-1 group-hover:text-white transition-colors">{mod.title}</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">Gestione flussi e automazione dati per {mod.id}.</p>
+            <div className="mt-4 flex items-center text-xs font-bold uppercase tracking-widest text-zinc-600 group-hover:text-zinc-400">
+              Apri Modulo <Plus className="ml-2 w-3 h-3" />
+            </div>
           </button>
-        </div>
+        ))}
       </div>
+
+      <section className="mt-12 p-8 rounded-2xl border border-dashed border-zinc-800 flex flex-col items-center justify-center text-center">
+        <div className="text-zinc-600 mb-4 font-mono text-xs uppercase tracking-widest font-bold italic">Deep Intelligence Feed</div>
+        <p className="text-zinc-500 max-w-md italic">"I dati sono la nuova materia prima. La matrice è lo stampo."</p>
+      </section>
     </div>
   );
 }
