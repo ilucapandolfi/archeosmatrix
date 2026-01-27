@@ -1,73 +1,100 @@
-// app/builder/page.tsx
 "use client";
-import React, { useState } from 'react';
-import { Plus, Layout, Type, CreditCard, Database, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Database, Layout, Wallet as WalletIcon, Save } from 'lucide-react';
 
-export default function CMSBuilder() {
-  const [blocks, setBlocks] = useState<any[]>([]); // La tua pagina dinamica
+export default function MatrixBuilder() {
+  const [node, setNode] = useState<any>({
+    title: "Nuova Pagina Trading",
+    ui_schema: { blocks: [] },
+    data_content: { balance: "12,450.00", roi: "+15.4%" }
+  });
 
   const addBlock = (type: string) => {
-    const newBlock = { id: Date.now(), type, content: {} };
-    setBlocks([...blocks, newBlock]);
+    const newBlock = { 
+        id: Date.now(), 
+        type, 
+        props: { title: "Nuovo Blocco", color: "blue" },
+        mapTo: "" // Campo del database a cui collegarsi
+    };
+    setNode({ ...node, ui_schema: { blocks: [...node.ui_schema.blocks, newBlock] } });
   };
 
   return (
-    <div className="flex h-screen bg-[#050505] text-white">
-      {/* Sidebar dei Blocchi (Stile Notion/Webflow) */}
-      <aside className="w-72 border-r border-white/5 bg-[#0A0A0A] p-4 flex flex-col">
-        <div className="mb-8 font-bold text-blue-500 uppercase tracking-tighter text-sm">Component Library</div>
+    <div className="flex h-screen bg-[#020202] text-slate-300">
+      {/* Sidebar: Libreria Moduli */}
+      <aside className="w-64 border-r border-white/5 bg-[#080808] p-4 space-y-8">
+        <div className="font-black text-white italic tracking-tighter text-xl">MATRIX CORE</div>
         
-        <div className="space-y-2">
-          <BlockButton icon={<Layout size={16}/>} label="Market Grid" onClick={() => addBlock('grid')} />
-          <BlockButton icon={<CreditCard size={16}/>} label="Wallet Widget" onClick={() => addBlock('wallet')} />
-          <BlockButton icon={<Type size={16}/>} label="Rich Text Area" onClick={() => addBlock('text')} />
-          <BlockButton icon={<Database size={16}/>} label="Asset Property List" onClick={() => addBlock('properties')} />
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold text-slate-600 uppercase mb-2">Moduli UI</p>
+          <BuilderBtn icon={<Layout size={14}/>} label="Stat Card" onClick={() => addBlock('stat')} />
+          <BuilderBtn icon={<Database size={14}/>} label="Asset Grid" onClick={() => addBlock('grid')} />
+          <BuilderBtn icon={<WalletIcon size={14}/>} label="Wallet Widget" onClick={() => addBlock('wallet')} />
         </div>
 
-        <div className="mt-auto pt-4 border-t border-white/5 text-[10px] text-slate-500 uppercase font-bold">
-          Stato: Editing Mode
-        </div>
+        <button className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-bold transition mt-10">
+          <Save size={14} /> SALVA NEL DB
+        </button>
       </aside>
 
-      {/* Main Canvas (La tua Pagina) */}
-      <main className="flex-1 overflow-y-auto p-12 bg-black flex justify-center">
-        <div className="max-w-4xl w-full space-y-8">
-          {blocks.length === 0 && (
-            <div className="border-2 border-dashed border-white/5 rounded-3xl h-64 flex flex-col items-center justify-center text-slate-600">
-               <Plus size={32} className="mb-2" />
-               <p>Clicca un blocco per iniziare a costruire</p>
+      {/* Canvas: Il tuo Builder */}
+      <main className="flex-1 p-12 overflow-y-auto">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <input 
+            className="bg-transparent text-5xl font-black text-white outline-none w-full mb-10 placeholder-slate-800"
+            placeholder="Titolo Pagina..."
+            defaultValue={node.title}
+          />
+
+          {node.ui_schema.blocks.map((block: any) => (
+            <div key={block.id} className="relative group border border-transparent hover:border-blue-500/50 rounded-2xl transition">
+              <div className="absolute -left-10 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Plus size={16} className="text-slate-600 cursor-pointer" />
+              </div>
+              <RenderModule type={block.type} data={node.data_content} />
+            </div>
+          ))}
+
+          {node.ui_schema.blocks.length === 0 && (
+            <div className="h-40 border-2 border-dashed border-white/5 rounded-3xl flex items-center justify-center text-slate-600 font-medium">
+              Trascina un modulo o usa "/" per iniziare
             </div>
           )}
-          
-          {blocks.map((block) => (
-            <RenderBlock key={block.id} block={block} />
-          ))}
         </div>
       </main>
-
-      {/* Pannello Proprietà (Modifica Campi) */}
-      <aside className="w-64 border-l border-white/5 bg-[#0A0A0A] p-4 hidden xl:block">
-        <div className="text-xs font-bold text-slate-500 uppercase mb-4 flex items-center gap-2">
-          <Settings size={14} /> Properties
-        </div>
-        <p className="text-[11px] text-slate-600 italic">Seleziona un blocco per modificare le sue proprietà dinamiche.</p>
-      </aside>
     </div>
   );
 }
 
-// Funzione di rendering dinamico dei blocchi Tailwind
-function RenderBlock({ block }: any) {
-  if (block.type === 'grid') return <div className="grid grid-cols-2 gap-4 p-4 bg-white/5 rounded-xl border border-white/10 italic text-slate-400">Grid Layout Placeholder</div>;
-  if (block.type === 'wallet') return <div className="p-8 bg-blue-600 rounded-3xl font-mono text-3xl font-bold">12.450,00 TRC</div>;
-  if (block.type === 'text') return <h1 className="text-4xl font-bold outline-none focus:ring-1 focus:ring-blue-500 p-2" contentEditable>Titolo della Pagina...</h1>;
-  return null;
+// IL MOTORE DI RENDERING DEI MODULI
+function RenderModule({ type, data }: any) {
+  const modules: any = {
+    stat: (
+      <div className="bg-[#0A0A0A] border border-white/5 p-6 rounded-2xl">
+        <p className="text-xs text-slate-500 uppercase font-bold mb-1">ROI Mercato</p>
+        <p className="text-3xl font-mono font-black text-emerald-400">{data.roi}</p>
+      </div>
+    ),
+    wallet: (
+      <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-3xl shadow-2xl shadow-blue-900/20">
+        <p className="text-blue-200 text-xs font-bold uppercase mb-2">Liquidità Interna</p>
+        <p className="text-4xl font-mono font-black text-white italic tracking-tighter">{data.balance} TRC</p>
+      </div>
+    ),
+    grid: (
+      <div className="grid grid-cols-2 gap-4">
+        <div className="h-32 bg-white/5 rounded-xl border border-white/5 animate-pulse"></div>
+        <div className="h-32 bg-white/5 rounded-xl border border-white/5 animate-pulse"></div>
+      </div>
+    )
+  };
+  return modules[type] || null;
 }
 
-function BlockButton({ icon, label, onClick }: any) {
+function BuilderBtn({ icon, label, onClick }: any) {
   return (
-    <button onClick={onClick} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition border border-transparent hover:border-white/5 text-sm text-slate-400 hover:text-white">
-      {icon} {label}
+    <button onClick={onClick} className="w-full flex items-center gap-3 p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-md text-sm transition">
+      {icon} <span>{label}</span>
     </button>
   );
 }
