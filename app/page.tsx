@@ -1,92 +1,165 @@
-export default function Terminal() {
-  return (
-    <div className="p-8">
-      <header className="flex justify-between items-end mb-10">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Market Terminal</h1>
-          <p className="text-slate-500">Scansione real-time dei mercati globali</p>
-        </div>
-        <div className="text-right">
-          <div className="text-xs text-slate-500 uppercase">Potere d'acquisto</div>
-          <div className="text-2xl font-mono text-white">12.450,00 <span className="text-blue-500 text-sm">TRC</span></div>
-        </div>
-      </header>
+import { ArrowUpRight, BarChart3, Wallet, Clock, Zap } from "lucide-react";
 
-      {/* Market Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Card Asset - Esempio Ford Focus */}
-        <AssetCard 
-          name="Ford Focus 2022" 
-          tags={["Auto", "Wholesale"]} 
-          price="18.400€" 
-          roi="+15.4%" 
-          contention="0.4"
-          link="https://www.mobile.de/it/veicolo/ford+focus+2022"
-        />
-        <AssetCard 
-          name="iPhone 17 Pro 256GB" 
-          tags={["Tech", "Retail"]} 
-          price="1.149€" 
-          roi="+18.2%" 
-          contention="0.9"
-          link="https://www.amazon.it/dp/B0..."
-        />
-        <AssetCard 
-          name="Lotto AirPods Max (10pz)" 
-          tags={["Tech", "Futures"]} 
-          price="4.200€" 
-          roi="+22.1%" 
-          contention="0.2"
-          link="#"
-        />
+export default function ProDashboard() {
+  return (
+    <div className="min-h-screen bg-[#050505] text-slate-300">
+      {/* Top Bar Sottile */}
+      <div className="border-b border-white/5 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-[1600px] mx-auto flex h-14 items-center justify-between px-6">
+          <div className="flex items-center gap-8">
+            <span className="text-white font-bold tracking-tighter text-lg">ARCHEOS<span className="text-blue-500">MATRIX</span></span>
+            <nav className="hidden md:flex gap-6 text-sm font-medium text-slate-500">
+              <a href="#" className="text-white">Terminal</a>
+              <a href="#" className="hover:text-white transition">Futures</a>
+              <a href="#" className="hover:text-white transition">Analytics</a>
+            </nav>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end">
+                <span className="text-[10px] uppercase text-slate-500 font-bold leading-none">Net Liquidity</span>
+                <span className="text-emerald-400 font-mono font-bold">12,450.00 TRC</span>
+            </div>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 border border-white/20"></div>
+          </div>
+        </div>
       </div>
-      
-      {/* Trading History - Bloomberg Style */}
-      <section className="mt-12 bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden">
-        <div className="p-4 bg-slate-900/50 border-b border-slate-800 flex justify-between">
-          <span className="text-xs font-bold uppercase tracking-widest">News & Anomalie di Mercato</span>
-          <span className="text-xs text-blue-500 font-mono italic underline">Live Feed</span>
+
+      <main className="max-w-[1600px] mx-auto p-6 space-y-6">
+        
+        {/* Market Pulse (Ticker) */}
+        <div className="flex gap-4 overflow-hidden py-2 border-b border-white/5 whitespace-nowrap">
+           <TickerItem label="IPHONE 17P" value="1.149€" change="+1.2%" />
+           <TickerItem label="FORD FOCUS" value="18.400€" change="-0.4%" />
+           <TickerItem label="PS5 PRO" value="799€" change="+5.7%" />
+           <TickerItem label="MACBOOK M4" value="2.450€" change="0.0%" />
         </div>
-        <div className="p-6 space-y-4 font-mono text-sm">
-          <div className="flex gap-4 border-l-2 border-emerald-500 pl-4">
-            <span className="text-slate-500">[21:44]</span>
-            <span className="text-white">FLASH SALE:</span>
-            <span className="text-slate-400 text-xs">Prezzo iPhone 17 Pro su Amazon DE sceso a 1.090€. Arbitraggio attivabile.</span>
+
+        <div className="grid grid-cols-12 gap-6">
+          
+          {/* Colonna Sinistra: Monitoraggio Mercato */}
+          <div className="col-span-12 lg:col-span-8 space-y-6">
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-white">Live Arbitrage Opportunities</h2>
+                <div className="flex gap-2">
+                    <button className="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-md border border-white/10 transition">Export CSV</button>
+                    <button className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md font-bold transition">New Trade</button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ModernAssetCard 
+                    name="Ford Focus 2022" 
+                    price="18,400€" 
+                    roi="15.4%" 
+                    type="Wholesale" 
+                    provider="Metro IT" 
+                    status="Buy" 
+                />
+                <ModernAssetCard 
+                    name="iPhone 17 Pro 256GB" 
+                    price="1,149€" 
+                    roi="18.2%" 
+                    type="Retail" 
+                    provider="Amazon IT" 
+                    status="Active" 
+                />
+            </div>
+
+            {/* Trading Journal / Logs */}
+            <div className="bg-[#0A0A0A] border border-white/5 rounded-xl p-6">
+                <div className="flex items-center gap-2 mb-4 text-slate-400 text-sm font-bold uppercase tracking-wider">
+                    <Clock size={14} /> 
+                    <span>Activity Feed</span>
+                </div>
+                <div className="space-y-4">
+                    <ActivityRow time="22:15" msg="Bot #04 detected price drop on PS5 Pro (eBay IT)" color="text-blue-400" />
+                    <ActivityRow time="22:02" msg="Future Contract SETTLED - User_99 (+2,450 TRC)" color="text-emerald-400" />
+                    <ActivityRow time="21:45" msg="Swap Fee applied to 14 open positions" color="text-slate-500" />
+                </div>
+            </div>
           </div>
-          <div className="flex gap-4 border-l-2 border-blue-500 pl-4">
-            <span className="text-slate-500">[21:30]</span>
-            <span className="text-white">FUTURE SETTLED:</span>
-            <span className="text-slate-400 text-xs">Utente #842 ha chiuso posizione su Lotto Ford Focus (+2.400€ Net).</span>
+
+          {/* Colonna Destra: Performance & Wallet */}
+          <div className="col-span-12 lg:col-span-4 space-y-6">
+             <div className="bg-gradient-to-br from-blue-600/20 to-transparent border border-blue-500/20 rounded-2xl p-6">
+                <div className="flex justify-between items-start mb-6">
+                    <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400"><Wallet size={24} /></div>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold uppercase">System Online</span>
+                </div>
+                <h3 className="text-slate-400 text-sm mb-1">Available Trading Credits</h3>
+                <div className="text-4xl font-mono font-bold text-white mb-6 tracking-tighter">12,450.00</div>
+                <button className="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-slate-200 transition flex items-center justify-center gap-2">
+                   <Zap size={16} fill="currentColor" /> DEPOSIT CREDITS
+                </button>
+             </div>
+
+             <div className="bg-[#0A0A0A] border border-white/5 rounded-xl p-6">
+                <h3 className="text-white font-bold mb-4">Portfolio Analytics</h3>
+                <div className="space-y-4">
+                    <ProgressStat label="Success Rate" value="94%" percent={94} />
+                    <ProgressStat label="Active Futures" value="8/10" percent={80} />
+                    <ProgressStat label="Monthly ROI" value="+22.4%" percent={65} />
+                </div>
+             </div>
           </div>
+
         </div>
-      </section>
+      </main>
     </div>
   );
 }
 
-function AssetCard({ name, tags, price, roi, contention, link }) {
-  return (
-    <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 hover:border-blue-500/50 transition-all group">
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex flex-wrap gap-2">
-          {tags.map(t => <span key={t} className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400 rounded-full uppercase font-bold tracking-tighter">{t}</span>)}
+// Sotto-componenti per pulizia codice
+function TickerItem({ label, value, change }) {
+    return (
+        <div className="flex gap-2 text-[11px] font-mono items-center border-r border-white/5 pr-4">
+            <span className="text-slate-500">{label}</span>
+            <span className="text-white">{value}</span>
+            <span className={change.includes('+') ? 'text-emerald-500' : 'text-red-500'}>{change}</span>
         </div>
-        <div className="text-emerald-400 font-bold text-xl">{roi}</div>
-      </div>
-      <h2 className="text-white font-bold text-lg mb-1">{name}</h2>
-      <div className="text-2xl font-mono text-white mb-6">{price}</div>
-      
-      <div className="grid grid-cols-2 gap-3">
-        <button className="bg-blue-600 text-white font-bold py-2 rounded-lg text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">APRI FUTURE</button>
-        <a href={link} target="_blank" className="bg-slate-800 text-center text-slate-300 font-bold py-2 rounded-lg text-sm hover:bg-slate-700 transition">ANALISI</a>
-      </div>
-      <div className="mt-4 flex justify-between items-center text-[10px] text-slate-500 uppercase">
-        <span>Contention Rate</span>
-        <div className="flex gap-1">
-           <div className={`h-1.5 w-8 rounded ${parseFloat(contention) > 0.7 ? 'bg-red-500' : 'bg-blue-500'}`}></div>
-           <span className="font-mono">{contention}</span>
+    );
+}
+
+function ModernAssetCard({ name, price, roi, type, provider, status }) {
+    return (
+        <div className="group bg-[#0A0A0A] border border-white/5 p-5 rounded-2xl hover:border-blue-500/30 transition-all cursor-pointer relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowUpRight className="text-blue-500" size={20} />
+            </div>
+            <div className="flex justify-between items-start mb-4">
+                <span className="text-[10px] bg-white/5 text-slate-400 px-2 py-0.5 rounded font-bold uppercase tracking-tighter border border-white/5">{type}</span>
+                <span className="text-emerald-400 font-mono font-bold text-lg">+{roi}</span>
+            </div>
+            <h3 className="text-white font-bold text-lg mb-1">{name}</h3>
+            <p className="text-slate-500 text-xs mb-4">Market: <span className="text-slate-300">{provider}</span></p>
+            <div className="flex justify-between items-end">
+                <div className="text-2xl font-mono text-white font-bold tracking-tighter">{price}</div>
+                <button className="text-[11px] font-bold text-blue-500 uppercase tracking-widest hover:text-blue-400">Trade Now</button>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
+}
+
+function ActivityRow({ time, msg, color }) {
+    return (
+        <div className="flex gap-4 text-xs font-mono border-l border-white/5 pl-4 relative">
+            <div className="absolute -left-[1px] top-0 h-2 w-[2px] bg-blue-500"></div>
+            <span className="text-slate-600">{time}</span>
+            <span className={color}>{msg}</span>
+        </div>
+    );
+}
+
+function ProgressStat({ label, value, percent }) {
+    return (
+        <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+                <span className="text-slate-500">{label}</span>
+                <span className="text-white font-mono">{value}</span>
+            </div>
+            <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-600" style={{ width: `${percent}%` }}></div>
+            </div>
+        </div>
+    );
 }
